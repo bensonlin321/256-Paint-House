@@ -149,12 +149,17 @@ public:
 
     int minCost_DP2(std::vector<std::vector<int>>& costs) {
         if (costs.empty() || costs[0].empty()) return 0;
-        std::vector<std::vector<int>> dp = costs;
-        for (int i = 1; i < dp.size(); ++i) {
-            dp[i][0] += std::min(dp[i - 1][1], dp[i - 1][2]);
-            dp[i][1] += std::min(dp[i - 1][0], dp[i - 1][2]);
-            dp[i][2] += std::min(dp[i - 1][0], dp[i - 1][1]);
+        std::vector<std::vector<int>> dp(costs.size() + 1, std::vector<int>(3, 0));
+        // calculate accumulated minimum cost in each color
+        for (int i = 1; i <= costs.size(); i++) {
+            // if the current color choose the red,
+            // the previous color should choose either blue or green  
+            dp[i][0] = std::min(dp[i - 1][1], dp[i - 1][2]) + costs[i - 1][0];
+
+            dp[i][1] = std::min(dp[i - 1][0], dp[i - 1][2]) + costs[i - 1][1];
+            dp[i][2] = std::min(dp[i - 1][0], dp[i - 1][1]) + costs[i - 1][2];
         }
+        // dp.back()[0] == dp[dp.size()-1][0]
         return std::min(std::min(dp.back()[0], dp.back()[1]), dp.back()[2]);
     }
 };
@@ -165,6 +170,6 @@ int main(int argc, char *argv[]) {
     std::vector<int> c1{ 1, 1, 1 };
     std::vector<int> c2{ 8, 2, 2 };
     std::vector<int> c3{ 10,2, 1 };
-    std::vector< std::vector<int> > cost{ c0, c1, c2, c3 };
-    printf("output:%d\n", s -> minCost(cost));
+    std::vector< std::vector<int> > costs{ c0, c1, c2, c3 };
+    printf("output:%d\n", s -> minCost_DP2(costs));
 }
