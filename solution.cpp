@@ -146,6 +146,17 @@ public:
         }
         return std::min(std::min(dp.back()[0], dp.back()[1]), dp.back()[2]);
     }
+
+    int minCost_DP2(std::vector<std::vector<int>>& costs) {
+        if (costs.empty() || costs[0].empty()) return 0;
+        std::vector<std::vector<int>> dp = costs;
+        for (int i = 1; i < dp.size(); ++i) {
+            dp[i][0] += std::min(dp[i - 1][1], dp[i - 1][2]);
+            dp[i][1] += std::min(dp[i - 1][0], dp[i - 1][2]);
+            dp[i][2] += std::min(dp[i - 1][0], dp[i - 1][1]);
+        }
+        return std::min(std::min(dp.back()[0], dp.back()[1]), dp.back()[2]);
+    }
 };
 
 int main(int argc, char *argv[]) {
