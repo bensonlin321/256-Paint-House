@@ -32,6 +32,25 @@ std::pair<int, int> get_index_pair(int previous_color) {
     return index_pair;
 }
 
+std::vector<int> check_exist_same_value(std::vector<std::vector<int>> costs) {
+    std::vector<int> tmp_same_vec;
+    for(int i = 0 ; i < costs[i].size(); i++) {
+        for(int j = i+1 ; j < costs[i].size(); j++) {
+            if(costs[i][i] == costs[i][j]) {
+                if(find(tmp_same_vec.begin(), tmp_same_vec.end(), costs[i][i]) == tmp_same_vec.end())
+                    tmp_same_vec.push_back(i);
+                if(find(tmp_same_vec.begin(), tmp_same_vec.end(), costs[i][j]) == tmp_same_vec.end())
+                    tmp_same_vec.push_back(j);
+                break;
+            }
+        }
+        if(tmp_same_vec.size() == 3){
+                break;
+        }
+    }
+    return tmp_same_vec;
+}
+
 class Solution {
 public:
     int minCost(std::vector<std::vector<int>>& costs) {
@@ -51,21 +70,7 @@ public:
 
         // find if there are some same color cost exist in costs arr
         std::vector<int> tmp_same_vec;
-        for(int i = 0 ; i < costs[0].size(); i++) {
-            for(int j = i+1 ; j < costs[0].size(); j++) {
-                if(costs[0][i] == costs[0][j]) {
-                    if(find(tmp_same_vec.begin(), tmp_same_vec.end(), costs[0][i]) == tmp_same_vec.end())
-                        tmp_same_vec.push_back(i);
-                    
-                    if(find(tmp_same_vec.begin(), tmp_same_vec.end(), costs[0][j]) == tmp_same_vec.end())
-                        tmp_same_vec.push_back(j);
-                    break;
-                }
-            }
-            if(tmp_same_vec.size() == 3){
-                break;
-            }
-        }
+        tmp_same_vec = check_exist_same_value(costs);
 
         if(tmp_same_vec.size() > 0) {
             same_val_color_candidate.push_back(tmp_same_vec);
@@ -109,21 +114,7 @@ public:
 
                 // check if there are some same color value exist in current house
                 std::vector<int> sub_tmp_same_vec;
-                for(int i = 0 ; i < costs[i].size(); i++) {
-                    for(int j = i+1 ; j < costs[i].size(); j++) {
-                        if(costs[i][i] == costs[i][j]) {
-                            if(find(sub_tmp_same_vec.begin(), sub_tmp_same_vec.end(), costs[i][i]) == sub_tmp_same_vec.end())
-                                sub_tmp_same_vec.push_back(i);
-                            
-                            if(find(sub_tmp_same_vec.begin(), sub_tmp_same_vec.end(), costs[i][j]) == sub_tmp_same_vec.end())
-                                sub_tmp_same_vec.push_back(j);
-                            break;
-                        }
-                    }
-                    if(sub_tmp_same_vec.size() == 3){
-                        break;
-                    }
-                }
+                sub_tmp_same_vec = check_exist_same_value(costs);
                 if(sub_tmp_same_vec.size() > 0) {
                     same_val_color_candidate.push_back(sub_tmp_same_vec);
                 }
@@ -150,8 +141,8 @@ int main(int argc, char *argv[]) {
     Solution *s = new Solution();
     std::vector<int> c0{ 2, 2, 2 };
     std::vector<int> c1{ 1, 1, 1 };
-    std::vector<int> c2{ 5, 5, 19 };
-    std::vector<int> c3{ 10,1, 19 };
+    std::vector<int> c2{ 8, 2, 2 };
+    std::vector<int> c3{ 10,2, 1 };
     std::vector< std::vector<int> > cost{ c0, c1, c2, c3 };
     printf("output:%d\n", s -> minCost(cost));
 }
